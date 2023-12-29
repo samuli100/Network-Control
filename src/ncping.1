@@ -1,0 +1,92 @@
+.TH NCPING 1 "December 2023" "Version 1.0" "User Commands"
+
+.SH NAME
+ncping \- Periodically ping hosts and manage configuration
+
+.SH SYNOPSIS
+.B ncping
+[\fIOPTIONS\fR] [\fIcommand\fR [\fIarguments\fR]]
+
+.SH DESCRIPTION
+\fBncping\fR is a script that periodically pings specified hosts and provides functionality to manage host groups, cron jobs, and configuration.
+
+.PP
+The script can be executed with various commands and options to perform specific tasks.
+
+.SH COMMANDS
+The following commands are available:
+
+.IP "\fBaddhost\fR \fIIP-ADDRESS\fR"
+Adds the specified IP address to the list of hosts. If no group is specified, it is added to the default group.
+
+.IP "\fBdelhost\fR \fIIP-ADDRESS\fR"
+Removes the specified IP address from the list of hosts.
+
+.IP "\fBlshosts\fR"
+Lists all IP addresses (hosts).
+
+.IP "\fBcreategroup\fR \fIGROUP-NAME\fR"
+Creates a group with the specified name.
+
+.IP "\fBdelgroup\fR \fIGROUP-NAME\fR"
+Removes the specified group.
+
+.IP "\fBaddgroup\fR \fIGROUP-NAME IP-ADDRESS\fR"
+Adds the specified IP address to the named group.
+
+.IP "\fBrmgroup\fR \fIGROUP-NAME IP-ADDRESS\fR"
+Removes the specified IP address from the named group.
+
+.IP "\fBccron\fR \fIGROUP-NAME CRON-SCHEDULE\fR"
+Creates a cron job for the named group with the specified cron schedule.
+
+.IP "\fBdelcron\fR \fIGROUP-NAME\fR"
+Deletes the cron job for the named group.
+
+.IP "\fBconfig\fR"
+Opens the configuration file for editing.
+
+.SH OPTIONS
+The following options are available:
+
+.IP "\fB-h\fR"
+Display this help message.
+
+.IP "\fBinstall\fR \fIX\fR"
+Installs a cron job to run the script every \fIX\fR minutes.
+
+.IP "\fBuninstall\fR"
+Removes the installed cron job.
+
+.SH EXAMPLES
+To add a host:
+.B ncping addhost 192.168.1.1
+
+To create a group:
+.B ncping creategroup mygroup
+
+To add a host to a group:
+.B ncping addgroup mygroup 192.168.1.2
+
+To create a cron job for a group:
+.B ncping ccron mygroup "*/5"
+
+.SH SEE ALSO
+.BR cron (8),
+.BR ping (8)
+
+.SH AUTHOR
+Written by [Your Name].
+
+.SH COPYRIGHT
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+.SH BUGS
+Report bugs to [Your Contact Information].
+
+.SH VERSION
+1.0
+
+.SH DATE
+December 2023
