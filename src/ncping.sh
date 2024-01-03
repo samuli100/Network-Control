@@ -11,6 +11,7 @@ pinging() {
     local anzahl_pakete=""
     local timeout=""
     local zeitintervall=""
+    local group_name="$1"
 
     while IFS= read -r line; do
         case "$line" in
@@ -29,22 +30,32 @@ pinging() {
         esac
     done < "$CONFIG_FILE"
 
-    [[ $zeitintervall -eq 0 ]] && zeitintervall=1  # Should not be 0
+    if [ "$zeitintervall" -eq 0 ]; then
+        zeitintervall=1     # Should not be 0
+    fi
 
-    echo "---------- Start Pinging ----------"
+    local group_folder="$GROUPS_DIR/$group_name"
+    local group_log_file="$group_folder/$group_name.log.txt"
+    local group_hosts_file="$group_folder/$group_name.hosts"
+
+    if [ ! -d "$group_folder" ]; then
+        echo "Group $group_name does not exist. Skipping pinging for this group."
+        return 1
+    fi
+
+    echo "---------- Start Pinging for Group: $group_name ----------"
 
     while IFS= read -r line || [ -n "$line" ]; do
-        [[ -n "$line" ]] || continue
-
         echo "Ping will be executed for: $line"
 
-        ping -c "$anzahl_pakete" -w "$timeout" -i "$zeitintervall" "$line"
+        ping -c "$anzahl_pakete" -w "$timeout" -i "$zeitintervall" "$line" >> "$group_log_file" 2>&1
 
-        [[ $? -ne 0 ]] && { echo "$line not reachable!"; echo "$line" >> "$LOG_FILE"; }
+        echo "$line" >> "$group_hosts_file"
 
         echo "-------------------------"
-    done < "$HOSTS_FILE"
+    done < "$group_hosts_file"
 }
+
 
 editConfig() {
     nano "$CONFIG_FILE" || { echo "Error opening configuration file."; exit 1; }
@@ -68,9 +79,21 @@ printhosts(){
 }
 
 creategroup() {
-    [[ -n "$2" ]] || { echo "No group name provided."; return 1; }
+    if [ -n "$2" ]; then
+        local group_name="$2"
+        local group_folder="$GROUPS_DIR/$group_name"
 
-    echo "$2" >> "$GROUPS_FILE" && echo "Group $2 created successfully!" || echo "Error creating group."
+        if [ ! -d "$group_folder" ]; then
+            mkdir "$group_folder"
+            touch "$group_folder/$group_name.hosts"
+            touch "$group_folder/$group_name.log.txt"
+            echo "Group $group_name created successfully!"
+        else
+            echo "Group $group_name already exists."
+        fi
+    else
+        echo "No group name provided."
+    fi
 }
 
 delgroup() {
