@@ -28,6 +28,10 @@ rm "$BIN_DIR/$CRON_JOB_NAME" || { echo "Error removing script link."; exit 1; }
 # Remove man page
 rm "$MAN_DIR/$CRON_JOB_NAME.1.gz" || { echo "Error removing man page."; exit 1; }
 
+# Remove the Network-Control folder
+NETWORK_CONTROL_DIR="/path/to/Network-Control"  # Change this to the actual path
+rm -rf "$NETWORK_CONTROL_DIR" || { echo "Error removing Network-Control folder."; exit 1; }
+
 # Verify removal of script directory
 [ ! -d "$SCRIPT_DIR" ] && echo "Program directory removed." || echo "Error removing program directory."
 
@@ -36,3 +40,6 @@ rm "$MAN_DIR/$CRON_JOB_NAME.1.gz" || { echo "Error removing man page."; exit 1; 
 
 # Verify removal of man page
 [ ! -f "$MAN_DIR/$CRON_JOB_NAME.1.gz" ] && echo "Man page removed." || echo "Error removing man page."
+
+# Verify removal of Network-Control folder
+[ ! -d "$NETWORK_CONTROL_DIR" ] && echo "Network-Control folder removed." || echo "Error removing Network-Control folder."
