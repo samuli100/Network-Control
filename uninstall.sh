@@ -16,6 +16,9 @@ else
     echo "No corresponding Cron job found for $CRON_JOB_NAME"
 fi
 
+# Add debug information
+echo "Removing script directory: $SCRIPT_DIR"
+
 # Remove script directory + contents
 rm -rf "$SCRIPT_DIR" || { echo "Error removing script directory."; exit 1; }
 
@@ -29,7 +32,7 @@ rm "$MAN_DIR/$CRON_JOB_NAME.1.gz" || { echo "Error removing man page."; exit 1; 
 [ ! -d "$SCRIPT_DIR" ] && echo "Program directory removed." || echo "Error removing program directory."
 
 # Verify removal script link
-[ ! -f "$BIN_DIR/$CRON_JOB_NAME" ] && echo "Script link removed." || echo "Error removing script  link."
+[ ! -f "$BIN_DIR/$CRON_JOB_NAME" ] && echo "Script link removed." || echo "Error removing script link."
 
 # Verify removal of man page
 [ ! -f "$MAN_DIR/$CRON_JOB_NAME.1.gz" ] && echo "Man page removed." || echo "Error removing man page."

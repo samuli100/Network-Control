@@ -11,6 +11,10 @@ pinging() {
 
     read -r packet_count timeout interval < <(awk '/# (Packet Count|Timeout|Interval) in seconds/ {print $NF}' "$CONFIG_FILE")
 
+    echo "Packet Count: $packet_count"
+    echo "Timeout: $timeout"
+    echo "Interval: $interval"
+
     ((interval == 0)) && interval=0.002
 
     while read -r line || [ -n "$line" ]; do
