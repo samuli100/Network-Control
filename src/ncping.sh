@@ -9,6 +9,11 @@ CRON_JOB_NAME="ncping"
 pinging() {
     local packet_count timeout interval
 
+    # Default values
+    packet_count=3
+    timeout=2
+    interval=0.002
+
     while IFS= read -r line; do
         case "$line" in
             "# Packet Count")
@@ -26,9 +31,7 @@ pinging() {
         esac
     done < "$CONFIG_FILE"
 
-    if [ "$interval" -eq 0 ]; then
-        interval=1     # Should not be 0
-    fi
+    ((interval == 0)) && interval=0.002
 
     while IFS= read -r line || [ -n "$line" ]; do
         if [ -n "$line" ]; then
