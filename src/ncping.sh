@@ -9,13 +9,10 @@ CRON_JOB_NAME="ncping"
 pinging() {
     local packet_count timeout interval
 
-    read -r packet_count timeout interval < <(awk '/# (Packet Count|Timeout|Interval) in seconds/ {print $NF}' "$CONFIG_FILE")
-
-    echo "Packet Count: $packet_count"
-    echo "Timeout: $timeout"
-    echo "Interval: $interval"
-
-    ((interval == 0)) && interval=0.002
+    # Read values from the configuration file
+    packet_count=$(awk -F': ' '/Packet Count/ {print $2}' "$CONFIG_FILE")
+    timeout=$(awk -F': ' '/Timeout/ {print $2}' "$CONFIG_FILE")
+    interval=$(awk -F': ' '/Interval/ {print $2}' "$CONFIG_FILE")
 
     while read -r line || [ -n "$line" ]; do
         [ -n "$line" ] || continue
@@ -32,7 +29,6 @@ pinging() {
             echo "$line not reachable!"
             echo "$line" >> "$LOG_FILE"
         fi
-
     done < "$HOSTS_FILE"
 }
 
