@@ -11,19 +11,27 @@ pinging() {
 
     read -r packet_count timeout interval < <(awk '/# (Packet Count|Timeout|Interval) in seconds/ {print $NF}' "$CONFIG_FILE")
 
-    ((interval == 0)) && interval=1
+    ((interval == 0)) && interval=0.002
 
     while read -r line || [ -n "$line" ]; do
         [ -n "$line" ] || continue
         echo "Ping will be executed for: $line"
 
-        ping -c "$packet_count" -w "$timeout" -i "$interval" "$line" || {
+        # Run ping with -D to display timestamp and capture the output
+        ping_output=$(ping "$line" -c "$packet_count" -w "$timeout" -i "$interval" -D)
+
+        if [ $? -eq 0 ]; then
+            # Extract and append timestamp to the IP address in the log file
+            timestamp=$(echo "$ping_output" | awk '/^PING/ {print $1}')
+            echo "$line [$timestamp]" >> "$LOG_FILE"
+        else
             echo "$line not reachable!"
             echo "$line" >> "$LOG_FILE"
-        }
+        fi
 
     done < "$HOSTS_FILE"
 }
+
 
 editConfig() {
     nano "$CONFIG_FILE" || { echo "Error opening configuration file."; exit 1; }
