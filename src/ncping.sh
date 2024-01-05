@@ -9,25 +9,38 @@ CRON_JOB_NAME="ncping"
 pinging() {
     local packet_count timeout interval
 
-    # Read values from the configuration file
-    packet_count=$(awk -F': ' '/Packet Count/ {print $2}' "$CONFIG_FILE")
-    timeout=$(awk -F': ' '/Timeout/ {print $2}' "$CONFIG_FILE")
-    interval=$(awk -F': ' '/Interval/ {print $2}' "$CONFIG_FILE")
+    while IFS= read -r line; do
+        case "$line" in
+            "# Packet Count")
+                read -r packet_count
+                ;;
+            "# Timeout")
+                read -r timeout
+                ;;
+            "# Interval")
+                read -r interval
+                ;;
+            *)
+                continue
+                ;;
+        esac
+    done < "$CONFIG_FILE"
 
-    while read -r line || [ -n "$line" ]; do
-        [ -n "$line" ] || continue
-        echo "Ping will be executed for: $line"
+    if [ "$interval" -eq 0 ]; then
+        interval=1     # Should not be 0
+    fi
 
-        # Run ping with -D to display timestamp and capture the output
-        ping_output=$(ping "$line" -c "$packet_count" -w "$timeout" -i "$interval" -D)
+    while IFS= read -r line || [ -n "$line" ]; do
+        if [ -n "$line" ]; then
+            echo "Ping will be executed for: $line"
 
-        if [ $? -eq 0 ]; then
-            # Extract and append timestamp to the IP address in the log file
-            timestamp=$(echo "$ping_output" | awk '/^PING/ {print $1}')
-            echo "$line [$timestamp]" >> "$LOG_FILE"
-        else
-            echo "$line not reachable!"
-            echo "$line" >> "$LOG_FILE"
+            ping "$line" -c "$packet_count" -w "$timeout" -i "$interval" 
+
+            if [ $? -ne 0 ]; then
+                echo "$line not reachable!"
+                echo "$line" >> "$LOG_FILE"
+            fi
+
         fi
     done < "$HOSTS_FILE"
 }
