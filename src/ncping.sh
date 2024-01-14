@@ -9,11 +9,6 @@ CRON_JOB_NAME="ncping"
 pinging() {
     local packet_count timeout interval
 
-    # Default values
-    packet_count=3
-    timeout=2
-    interval=0.002
-
     while IFS= read -r line; do
         case "$line" in
             "# Packet Count")
@@ -37,16 +32,20 @@ pinging() {
         if [ -n "$line" ]; then
             echo "Ping will be executed for: $line"
 
-            ping "$line" -c "$packet_count" -w "$timeout" -i "$interval" 
+            # Redirect the output of ping to both the console and the log file
+            ping_result=$(ping "$line" -c "$packet_count" -w "$timeout" -i "$interval" 2>&1)
 
             if [ $? -ne 0 ]; then
                 echo "$line not reachable!"
-                echo "$line" >> "$LOG_FILE"
+                echo "$line: $ping_result" >> "$LOG_FILE"
+            else
+                echo "$line reachable!"
+                echo "$line: $ping_result" >> "$LOG_FILE"
             fi
-
         fi
     done < "$HOSTS_FILE"
 }
+
 
 
 editConfig() {
