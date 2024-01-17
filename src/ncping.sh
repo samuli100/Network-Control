@@ -43,8 +43,7 @@ pinging() {
                 echo "$host not reachable!"
                 echo "$host: $ping_result" >> "$LOG_FILE"
             else
-                echo "$host reachable!"
-                echo "$host: $ping_result" >> "$LOG_FILE"
+                echo "$host: reachable!" >> "$LOG_FILE"
             fi
         fi
     done < "$HOSTS_FILE"
@@ -72,27 +71,27 @@ printhosts() {
 
 ccron() {
     local cron_schedule="$2"
+    local cron_job="*/$cron_schedule * * * * /usr/share/ncping/ncping.sh"
 
-    if [ -n "$cron_schedule" ]; then
-        local cron_job="*/$cron_schedule * * * * /usr/share/ncping/ncping.sh"
+    local existing_cron_job=$(crontab -l 2>/dev/null || echo "")
 
-        (crontab -l ; echo "$cron_job") | crontab - && echo "Cron job added successfully."
-        echo "$cron_job" >> "$CRON_JOBS_FILE"
-    else
-        echo "Cron schedule not provided."
+    if echo "$existing_cron_job" | grep -qE ".*$CRON_JOB_NAME"; then
+        # Remove existing cron job for "ncping" if it exists
+        existing_cron_job=$(echo "$existing_cron_job" | sed -E "/.*$CRON_JOB_NAME/d")
     fi
+
+    (echo "$existing_cron_job"; echo "$cron_job") | crontab - && echo "Cron job added/updated successfully."
+    echo "$cron_job" >> "$CRON_JOBS_FILE"
 }
 
 delcron() {
-    [ -n "$2" ] && local cron_job_name="$2"
-
-    local cron_job_pattern=".*$cron_job_name"
+    local cron_job_pattern=".*$CRON_JOB_NAME"
     local crontab_content=$(crontab -l 2>/dev/null || echo "")
 
     if echo "$crontab_content" | grep -qE "$cron_job_pattern"; then
-        echo "$crontab_content" | sed -E "/$cron_job_pattern/d" | crontab - && echo "Cron job removed successfully: $cron_job_name."
+        echo "$crontab_content" | sed -E "/$cron_job_pattern/d" | crontab - && echo "Cron job removed successfully: $CRON_JOB_NAME."
     else
-        echo "No corresponding Cron job found: $cron_job_name."
+        echo "No corresponding Cron job found: $CRON_JOB_NAME."
     fi
 }
 
