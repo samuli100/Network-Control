@@ -9,16 +9,16 @@ CRON_JOB_NAME="ncping"
 pinging() {
     local packet_count timeout interval
 
-    while IFS= read -r host; do
-        case "$host" in
-            "Packet Count")
-                read -r packet_count
+    while IFS= read -r line; do
+        case "$line" in
+            "Packet Count "*)
+                packet_count="${line#Packet Count }"
                 ;;
-            "Timeout")
-                read -r timeout
+            "Timeout "*)
+                timeout="${line#Timeout }"
                 ;;
-            "Interval")
-                read -r interval
+            "Interval "*)
+                interval="${line#Interval }"
                 ;;
             *)
                 continue
