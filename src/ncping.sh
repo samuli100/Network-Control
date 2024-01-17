@@ -9,8 +9,8 @@ CRON_JOB_NAME="ncping"
 pinging() {
     local packet_count timeout interval
 
-    while IFS= read -r line; do
-        case "$line" in
+    while IFS= read -r host; do
+        case "$host" in
             "Packet Count")
                 read -r packet_count
                 ;;
@@ -26,32 +26,25 @@ pinging() {
         esac
     done < "$CONFIG_FILE"
 
-    # Convert string values to numeric
-    packet_count=$((packet_count + 0))
-    timeout=$((timeout + 0))
-    interval=$(bc <<< "$interval + 0")
 
     ((interval == 0)) && interval=0.002
 
-    while IFS= read -r line || [ -n "$line" ]; do
-        if [ -n "$line" ]; then
-            echo "Ping will be executed for: $line"
-
-            # Add debug information to check what ping command is being executed
-            echo "Executing: ping $line -c $packet_count -w $timeout -i $interval"
+    while IFS= read -r host || [ -n "$host" ]; do
+        if [ -n "$host" ]; then
+            echo "Ping will be executed for: $host"
 
             # Redirect the output of ping to both the console and the log file
-            ping_result=$(ping "$line" -c "$packet_count" -w "$timeout" -i "$interval" 2>&1)
+            ping_result=$(ping "$host" -c "$packet_count" -w "$timeout" -i "$interval" 2>&1)
 
             # Add debug information to check the result of the ping command
             echo "Ping result: $ping_result"
 
             if [ $? -ne 0 ]; then
-                echo "$line not reachable!"
-                echo "$line: $ping_result" >> "$LOG_FILE"
+                echo "$host not reachable!"
+                echo "$host: $ping_result" >> "$LOG_FILE"
             else
-                echo "$line reachable!"
-                echo "$line: $ping_result" >> "$LOG_FILE"
+                echo "$host reachable!"
+                echo "$host: $ping_result" >> "$LOG_FILE"
             fi
         fi
     done < "$HOSTS_FILE"
