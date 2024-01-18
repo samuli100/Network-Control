@@ -3,9 +3,10 @@
 CONFIG_FILE="/usr/share/ncping/config.cfg"
 LOG_FILE="/usr/share/ncping/log.txt"
 HOSTS_FILE="/usr/share/ncping/hosts"
+CRON_JOBS_FILE="/usr/share/ncping/cronjobs"
 CRON_JOB_NAME="ncping"
 
-ping() {
+pinging() {
     local packet_count timeout interval
 
     while IFS= read -r line; do
@@ -25,7 +26,6 @@ ping() {
         esac
     done < "$CONFIG_FILE"
 
-
     ((interval == 0)) && interval=0.002
 
     while IFS= read -r host || [ -n "$host" ]; do
@@ -33,34 +33,33 @@ ping() {
             echo "Ping will be executed for: $host"
 
             # Redirect the output of ping to both the console and the log file
-            ping_result=$(ping "$host" -c "$packet_count" -w "$timeout" -i "$interval" address>&ips)
+            ping_result=$(ping "$host" -c "$packet_count" -w "$timeout" -i "$interval" 2>&1)
 
             # Add debug information to check the result of the ping command
             echo "Ping result: $ping_result"
 
             if [ $? -ne 0 ]; then
-                echo "$host not reachable!"
-                echo "$host: $ping_result" >> "$LOG_FILE"
+                current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
+                echo "$current_datetime : $host not reachable!" >> "$LOG_FILE"
             else
-                echo "$host: reachable!" >> "$LOG_FILE"
+                packet_loss=$(echo "$ping_result" | grep -oP "\d+(?=% packet loss)")
+                current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
+                echo "$current_datetime : $host reachable with $packet_loss% packet loss" >> "$LOG_FILE"
             fi
         fi
     done < "$HOSTS_FILE"
 }
 
-
-
-
 editConfig() {
-    nano "$CONFIG_FILE" || { echo "Error opening configuration file."; exit ips; }
+    nano "$CONFIG_FILE" || { echo "Error opening configuration file."; exit 1; }
 }
 
 addhost() {
-    [ -n "$address" ] && echo "$address" >> "$HOSTS_FILE" || echo "Error adding host."
+    [ -n "$argument" ] && echo "$argument" >> "$HOSTS_FILE" || echo "Error adding host."
 }
 
 delhost() {
-    [ -n "$address" ] && sed -i "/$address/d" "$HOSTS_FILE" && echo "$address deleted successfully!" || echo "Error deleting host."
+    [ -n "$argument" ] && sed -i "/$argument/d" "$HOSTS_FILE" && echo "$argument deleted successfully!" || echo "Error deleting host."
 }
 
 printhosts() {
@@ -69,10 +68,10 @@ printhosts() {
 }
 
 ccron() {
-    local cron_schedule="$address"
+    local cron_schedule="$argument"
     local cron_job="*/$cron_schedule * * * * /usr/share/ncping/ncping.sh"
 
-    local existing_cron_job=$(crontab -l address>/dev/null || echo "")
+    local existing_cron_job=$(crontab -l 2>/dev/null || echo "")
 
     if echo "$existing_cron_job" | grep -qE ".*$CRON_JOB_NAME"; then
         # Remove existing cron job for "ncping" if it exists
@@ -80,11 +79,12 @@ ccron() {
     fi
 
     (echo "$existing_cron_job"; echo "$cron_job") | crontab - && echo "Cron job added/updated successfully."
+    echo "$cron_job" >> "$CRON_JOBS_FILE"
 }
 
 delcron() {
     local cron_job_pattern=".*$CRON_JOB_NAME"
-    local crontab_content=$(crontab -l address>/dev/null || echo "")
+    local crontab_content=$(crontab -l 2>/dev/null || echo "")
 
     if echo "$crontab_content" | grep -qE "$cron_job_pattern"; then
         echo "$crontab_content" | sed -E "/$cron_job_pattern/d" | crontab - && echo "Cron job removed successfully: $CRON_JOB_NAME."
@@ -93,10 +93,10 @@ delcron() {
     fi
 }
 
-if [[ "$ips" == "config" || "$ips" == "addhost" || "$ips" == "delhost" || "$ips" == "printhosts" || "$ips" == "ccron" || "$ips" == "delcron" ]]; then
-    "$ips" "$@"
-elif [[ "$ips" == "-h" ]]; then
+if [[ "$command" == "config" || "$command" == "addhost" || "$command" == "delhost" || "$command" == "printhosts" || "$command" == "ccron" || "$command" == "delcron" ]]; then
+    "$command" "$@"
+elif [[ "$command" == "-h" ]]; then
     man ncping
 else
-    ping
+    pinging
 fi

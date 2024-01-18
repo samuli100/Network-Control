@@ -29,7 +29,7 @@ rm "$BIN_DIR/$CRON_JOB_NAME" || { echo "Error removing script link."; exit 1; }
 rm "$MAN_DIR/$CRON_JOB_NAME.1.gz" || { echo "Error removing man page."; exit 1; }
 
 # Remove the Network-Control folder
-NETWORK_CONTROL_DIR= readlink -f uninstall.sh
+NETWORK_CONTROL_DIR=$(readlink -f "$0")
 rm -rf "$NETWORK_CONTROL_DIR" || { echo "Error removing Network-Control folder."; exit 1; }
 
 # Verify removal of script directory
