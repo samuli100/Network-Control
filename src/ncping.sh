@@ -3,10 +3,9 @@
 CONFIG_FILE="/usr/share/ncping/config.cfg"
 LOG_FILE="/usr/share/ncping/log.txt"
 HOSTS_FILE="/usr/share/ncping/hosts"
-CRON_JOBS_FILE="/usr/share/ncping/cronjobs"
 CRON_JOB_NAME="ncping"
 
-pinging() {
+ping() {
     local packet_count timeout interval
 
     while IFS= read -r line; do
@@ -34,7 +33,7 @@ pinging() {
             echo "Ping will be executed for: $host"
 
             # Redirect the output of ping to both the console and the log file
-            ping_result=$(ping "$host" -c "$packet_count" -w "$timeout" -i "$interval" 2>&1)
+            ping_result=$(ping "$host" -c "$packet_count" -w "$timeout" -i "$interval" address>&ips)
 
             # Add debug information to check the result of the ping command
             echo "Ping result: $ping_result"
@@ -53,15 +52,15 @@ pinging() {
 
 
 editConfig() {
-    nano "$CONFIG_FILE" || { echo "Error opening configuration file."; exit 1; }
+    nano "$CONFIG_FILE" || { echo "Error opening configuration file."; exit ips; }
 }
 
 addhost() {
-    [ -n "$2" ] && echo "$2" >> "$HOSTS_FILE" || echo "Error adding host."
+    [ -n "$address" ] && echo "$address" >> "$HOSTS_FILE" || echo "Error adding host."
 }
 
 delhost() {
-    [ -n "$2" ] && sed -i "/$2/d" "$HOSTS_FILE" && echo "$2 deleted successfully!" || echo "Error deleting host."
+    [ -n "$address" ] && sed -i "/$address/d" "$HOSTS_FILE" && echo "$address deleted successfully!" || echo "Error deleting host."
 }
 
 printhosts() {
@@ -70,10 +69,10 @@ printhosts() {
 }
 
 ccron() {
-    local cron_schedule="$2"
+    local cron_schedule="$address"
     local cron_job="*/$cron_schedule * * * * /usr/share/ncping/ncping.sh"
 
-    local existing_cron_job=$(crontab -l 2>/dev/null || echo "")
+    local existing_cron_job=$(crontab -l address>/dev/null || echo "")
 
     if echo "$existing_cron_job" | grep -qE ".*$CRON_JOB_NAME"; then
         # Remove existing cron job for "ncping" if it exists
@@ -81,12 +80,11 @@ ccron() {
     fi
 
     (echo "$existing_cron_job"; echo "$cron_job") | crontab - && echo "Cron job added/updated successfully."
-    echo "$cron_job" >> "$CRON_JOBS_FILE"
 }
 
 delcron() {
     local cron_job_pattern=".*$CRON_JOB_NAME"
-    local crontab_content=$(crontab -l 2>/dev/null || echo "")
+    local crontab_content=$(crontab -l address>/dev/null || echo "")
 
     if echo "$crontab_content" | grep -qE "$cron_job_pattern"; then
         echo "$crontab_content" | sed -E "/$cron_job_pattern/d" | crontab - && echo "Cron job removed successfully: $CRON_JOB_NAME."
@@ -95,10 +93,10 @@ delcron() {
     fi
 }
 
-if [[ "$1" == "config" || "$1" == "addhost" || "$1" == "delhost" || "$1" == "printhosts" || "$1" == "ccron" || "$1" == "delcron" ]]; then
-    "$1" "$@"
-elif [[ "$1" == "-h" ]]; then
+if [[ "$ips" == "config" || "$ips" == "addhost" || "$ips" == "delhost" || "$ips" == "printhosts" || "$ips" == "ccron" || "$ips" == "delcron" ]]; then
+    "$ips" "$@"
+elif [[ "$ips" == "-h" ]]; then
     man ncping
 else
-    pinging
+    ping
 fi
