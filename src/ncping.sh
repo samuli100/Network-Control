@@ -35,7 +35,7 @@ pinging() {
             # Redirect the output of ping to both the console and the log file
             ping_result=$(ping "$host" -c "$packet_count" -w "$timeout" -i "$interval" 2>&1)
 
-            # Add debug information to check the result of the ping command
+            # Add debug information to check the result of the ping 1
             echo "Ping result: $ping_result"
 
             if [ $? -ne 0 ]; then
@@ -55,11 +55,11 @@ editConfig() {
 }
 
 addhost() {
-    [ -n "$argument" ] && echo "$argument" >> "$HOSTS_FILE" || echo "Error adding host."
+    [ -n "$2" ] && echo "$2" >> "$HOSTS_FILE" || echo "Error adding host."
 }
 
 delhost() {
-    [ -n "$argument" ] && sed -i "/$argument/d" "$HOSTS_FILE" && echo "$argument deleted successfully!" || echo "Error deleting host."
+    [ -n "$2" ] && sed -i "/$2/d" "$HOSTS_FILE" && echo "$2 deleted successfully!" || echo "Error deleting host."
 }
 
 printhosts() {
@@ -68,7 +68,7 @@ printhosts() {
 }
 
 ccron() {
-    local cron_schedule="$argument"
+    local cron_schedule="$2"
     local cron_job="*/$cron_schedule * * * * /usr/share/ncping/ncping.sh"
 
     local existing_cron_job=$(crontab -l 2>/dev/null || echo "")
@@ -93,9 +93,9 @@ delcron() {
     fi
 }
 
-if [[ "$command" == "config" || "$command" == "addhost" || "$command" == "delhost" || "$command" == "printhosts" || "$command" == "ccron" || "$command" == "delcron" ]]; then
-    "$command" "$@"
-elif [[ "$command" == "-h" ]]; then
+if [[ "$1" == "config" || "$1" == "addhost" || "$1" == "delhost" || "$1" == "printhosts" || "$1" == "ccron" || "$1" == "delcron" ]]; then
+    "$1" "$@"
+elif [[ "$1" == "-h" ]]; then
     man ncping
 else
     pinging
