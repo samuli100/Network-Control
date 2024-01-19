@@ -1,20 +1,17 @@
-Certainly! Here's a basic README file that provides information on the installation process, uninstallation, and how to access the man pages:
+ncping - Network Ping Utility
 
-```markdown
-# ncping - Network Ping Utility
-
-## Overview
+Overview
 
 `ncping` is a Bash script designed for periodic pinging of specified hosts. It also provides functionality to manage host groups, cron jobs, and configuration.
 
-## Installation
+Installation
 
-### Prerequisites
+Prerequisites
 
 - Bash (Bourne Again SHell)
 - nano (a text editor) - used for configuring and viewing log files
 
-### Steps
+Steps
 
 1. Clone the repository or download the script files.
 
