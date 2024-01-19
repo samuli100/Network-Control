@@ -69,8 +69,17 @@ log() {
 
 # Hosts hinzufügen
 addhost() {
-    [ -n "$2" ] && echo "$2" >> "$HOSTS_FILE" || echo "Error adding host."
+    local new_host="$2"
+
+    # Überprüfen, ob der Host bereits existiert
+    if grep -qFx "$new_host" "$HOSTS_FILE"; then
+        echo "$new_host already exists."
+    else
+        # Fügt den Host hinzu
+        [ -n "$new_host" ] && echo "$new_host" >> "$HOSTS_FILE" || echo "Error adding host."
+    fi
 }
+
 
 # Hosts löschen
 delhost() {
