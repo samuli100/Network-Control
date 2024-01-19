@@ -35,16 +35,19 @@ pinging() {
             # Redirect the output of ping to both the console and the log file
             ping_result=$(ping "$host" -c "$packet_count" -w "$timeout" -i "$interval" 2>&1)
 
-            # Add debug information to check the result of the ping 1
+            # Add debug information to check the result of the ping
             echo "Ping result: $ping_result"
 
-            if [ $? -ne 0 ]; then
+            packet_loss=$(echo "$ping_result" | grep -oP "\d+(?=% packet loss)")
+
+            if [ $? -ne 0 ] || [ "$packet_loss" == "100" ] || [ -z "$packet_loss" ]; then
                 current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
                 echo "$current_datetime : $host not reachable!" >> "$LOG_FILE"
             else
-                packet_loss=$(echo "$ping_result" | grep -oP "\d+(?=% packet loss)")
+                
                 current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
                 echo "$current_datetime : $host reachable with $packet_loss% packet loss" >> "$LOG_FILE"
+                
             fi
         fi
     done < "$HOSTS_FILE"
