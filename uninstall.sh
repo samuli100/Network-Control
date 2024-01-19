@@ -5,7 +5,7 @@ CRON_JOB_NAME="ncping"
 SCRIPT_NAME_ger="ncping_ger"
 SCRIPT_DIR="/usr/share/$SCRIPT_NAME"
 BIN_DIR="/usr/bin"
-MAN_DIR="/usr/local/share/man/man1"
+MAN_DIR="/usr/local/man/man1"
 
 # Entfernt Cronjob
 rmc() {
