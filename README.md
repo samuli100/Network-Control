@@ -22,7 +22,7 @@ git clone https://github.com/your_username/ncping.git
 2. Navigate to the script directory.
 
 ```bash
-cd ncping
+cd Network-Control
 ```
 
 3. Run the installation script.
@@ -46,7 +46,7 @@ This should display the help message, indicating a successful installation.
 1. Navigate to the script directory.
 
 ```bash
-cd ncping
+cd Network-Control
 ```
 
 2. Run the uninstallation script.
