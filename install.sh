@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SCRIPT_NAME="ncping"
+SCRIPT_NAME_ger="ncping_ger"
 INSTALL_DIR="/usr/share/$SCRIPT_NAME"
 BIN_DIR="/usr/bin"
 MAN_DIR="/usr/local/share/man/man1"
