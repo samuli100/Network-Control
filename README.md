@@ -132,4 +132,4 @@ Written by Samuel Lindenfelser.
 This script is open-source software licensed under the [MIT license](LICENSE).
 ```
 
-Replace "your_username" in the clone command with your actual GitHub username or the appropriate URL for your repository. Additionally, replace "Your Name" in the author section with your name.
+
