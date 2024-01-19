@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Definieren von Dateipfaden und -namen
-CONFIG_FILE="/usr/share/ncping/config.cfg"
+CONFIG_FILE="/usr/share/ncping/config.txt"
 LOG_FILE="/usr/share/ncping/log.txt"
 HOSTS_FILE="/usr/share/ncping/hosts"
 CRON_JOB_NAME="ncping"
