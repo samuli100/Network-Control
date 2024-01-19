@@ -8,8 +8,8 @@ Installation
 
 Prerequisites
 
-- Bash (Bourne Again SHell)
-- nano (a text editor) - used for configuring and viewing log files
+- Bash 
+- nano - used for configuring and viewing log files
 
 Steps
 
