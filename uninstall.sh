@@ -6,7 +6,7 @@ SCRIPT_DIR="/usr/share/$SCRIPT_NAME"
 BIN_DIR="/usr/bin"
 MAN_DIR="/usr/local/share/man/man1"
 
-# Remove cron job
+# Entfernt Cronjob
 cron_job_pattern=".*$SCRIPT_NAME"
 crontab_content=$(crontab -l 2>/dev/null || echo "")
 
@@ -16,23 +16,19 @@ else
     echo "No corresponding Cron job found: $SCRIPT_NAME."
 fi
 
-# Add debug information
+# Fügt informationen hinzu
 echo "Removing script directory: $SCRIPT_DIR"
 
-# Remove script directory + contents
+# Entfernt Skript Ordner
 rm -rf "$SCRIPT_DIR" || { echo "Error removing script directory."; exit 1; }
 
-# Remove script link
+# Entfernt Skript link
 rm "$BIN_DIR/$SCRIPT_NAME" || { echo "Error removing script link."; exit 1; }
 
-# Remove man page
+# Enfernt man page
 rm "$MAN_DIR/$SCRIPT_NAME.1.gz" "$MAN_DIR/$SCRIPT_NAME_ger.1.gz" || { echo "Error removing man pages."; exit 1; }
 
-# Verify removal of script directory
+# Verifiziert die Auslöschung
 [ ! -d "$SCRIPT_DIR" ] && echo "Program directory removed." || echo "Error removing program directory."
-
-# Verify removal script link
 [ ! -f "$BIN_DIR/$SCRIPT_NAME" ] && echo "Script link removed." || echo "Error removing script link."
-
-# Verify removal of man pages
 [ ! -f "$MAN_DIR/$SCRIPT_NAME.1.gz" ] && [ ! -f "$MAN_DIR/$SCRIPT_NAME_ger.1.gz" ] && echo "Man pages removed." || echo "Error removing man pages."
