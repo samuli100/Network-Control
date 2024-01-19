@@ -1,21 +1,22 @@
 #!/bin/bash
 
 SCRIPT_NAME="ncping"
+CRON_JOB_NAME="ncping"
 SCRIPT_NAME_ger="ncping_ger"
 SCRIPT_DIR="/usr/share/$SCRIPT_NAME"
 BIN_DIR="/usr/bin"
 MAN_DIR="/usr/local/share/man/man1"
 
 # Entfernt Cronjob
-rmc(){
-    local existing_cron_job=$(crontab -l 2>/dev/null || echo "")
+rmc() {
+    local cron_job_pattern=".*$CRON_JOB_NAME"
+    local crontab_content=$(crontab -l 2>/dev/null || echo "")
 
-    # Löscht Cronjob wenn er existiert
-    if echo "$existing_cron_job" | grep -qE ".*$SCRIPT_NAME"; then
-        existing_cron_job=$(echo "$existing_cron_job" | sed -E "/.*$SCRIPT_NAME/d")
-    
+    # Löscht den Cronjob wenn er existiert
+    if echo "$crontab_content" | grep -qE "$cron_job_pattern"; then
+        echo "$crontab_content" | sed -E "/$cron_job_pattern/d" | crontab - && echo "Cron job removed successfully: $CRON_JOB_NAME."
     else
-        echo "No corresponding Cron job found: $SCRIPT_NAME."
+        echo "No corresponding Cron job found: $CRON_JOB_NAME."
     fi
 }
 
