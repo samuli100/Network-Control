@@ -100,7 +100,7 @@ ncping -l
 - Create or update a cron job:
 
 ```bash
-ncping ccron "MINUTES"
+ncping ccron <MINUTES>
 ```
 
 - Delete a cron job:
