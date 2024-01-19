@@ -3,7 +3,6 @@
 CONFIG_FILE="/usr/share/ncping/config.cfg"
 LOG_FILE="/usr/share/ncping/log.txt"
 HOSTS_FILE="/usr/share/ncping/hosts"
-CRON_JOBS_FILE="/usr/share/ncping/cronjobs"
 CRON_JOB_NAME="ncping"
 
 pinging() {
@@ -84,7 +83,6 @@ ccron() {
     fi
 
     (echo "$existing_cron_job"; echo "$cron_job") | crontab - && echo "Cron job added/updated successfully."
-    echo "$cron_job" >> "$CRON_JOBS_FILE"
 }
 
 delcron() {
