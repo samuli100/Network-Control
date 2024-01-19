@@ -130,6 +130,6 @@ Written by Samuel Lindenfelser.
 ## License
 
 This script is open-source software licensed under the [MIT license](LICENSE).
-```
+
 
 
