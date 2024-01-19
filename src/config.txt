@@ -1,0 +1,6 @@
+# Packet Count in seconds
+Packet Count 3
+# Timeout in seconds
+Timeout 2
+# Interval in seconds
+Interval 0

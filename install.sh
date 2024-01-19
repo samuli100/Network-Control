@@ -22,7 +22,6 @@ if [ -f "src/$MAIN_SCRIPT" ] && [ -f "src/$MAN_PAGE" ] && [ -f "src/$GER_MAN_PAG
     # Create assets / config 
     touch "$INSTALL_DIR/log.txt" "$INSTALL_DIR/hosts" || { echo "Error creating assets."; exit 1; }
     cp "src/$CONFIG_FILE" "$INSTALL_DIR/$CONFIG_FILE" || { echo "Error copying configuration file."; exit 1; }
-    dos2unix "$INSTALL_DIR/$CONFIG_FILE" || { echo "Error converting configuration file format."; exit 1; }
 
     # Create man pages
     cp "src/$MAN_PAGE" "$MAN_DIR/$SCRIPT_NAME.1" || { echo "Error copying man page file."; exit 1; }
