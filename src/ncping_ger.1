@@ -1,0 +1,71 @@
+.TH NCPING_GER 1 "January 2024" "Version 1.3" "Benutzerkommandos"
+
+.SH NAME
+ncping_ger \- Periodisch Hosts pingen und Konfiguration verwalten
+
+.SH SYNOPSIS
+.B ncping_ger
+[\fIOPTIONEN\fR] [\fIBEFEHL\fR [\fIARGUMENTE\fR]]
+
+.SH BESCHREIBUNG
+\fBncping_ger\fR ist ein Skript, das periodisch bestimmte Hosts pingt und Funktionen zur Verwaltung von Hostgruppen, Cron-Jobs und Konfigurationen bereitstellt.
+
+.PP
+Das Skript kann mit verschiedenen Befehlen und Optionen ausgeführt werden, um bestimmte Aufgaben zu erledigen.
+
+.SH BEFEHLE
+Die folgenden Befehle stehen zur Verfügung:
+
+.IP "\fBaddhost\fR \fIIP-ADRESSE\fR"
+Fügt die angegebene IP-Adresse zur Liste der Hosts hinzu.
+
+.IP "\fBdelhost\fR \fIIP-ADRESSE\fR"
+Entfernt die angegebene IP-Adresse aus der Liste der Hosts.
+
+.IP "\fBprinthosts\fR"
+Listet alle IP-Adressen (Hosts) auf.
+
+.IP "\fBccron\fR \fICRON-ZEITPLAN\fR"
+Erstellt einen Cron-Job für das periodische Pingen basierend auf dem angegebenen Cron-Zeitplan.
+
+.IP "\fBdelcron\fR \fICRON-JOB-NAME\fR"
+Löscht den Cron-Job mit dem angegebenen Namen.
+
+.IP "\fBconfig\fR"
+Öffnet die Konfigurationsdatei zur Bearbeitung.
+
+.SH OPTIONEN
+Die folgenden Optionen stehen zur Verfügung:
+
+.IP "\fB-h\fR"
+Zeigt diese Hilfe an.
+
+.SH BEISPIELE
+Um einen Host hinzuzufügen:
+.B ncping_ger addhost 192.168.1.1
+
+Um einen Cron-Job zu erstellen:
+.B ncping_ger ccron "*/5"
+
+Um einen Cron-Job zu löschen:
+.B ncping_ger delcron mycronjob
+
+.SH SIEHE AUCH
+.BR cron (8),
+.BR ping (8)
+
+.SH AUTOR
+Geschrieben von Samuel Lindenfelser.
+
+.SH URHEBERRECHT
+Dies ist freie Software: Sie können sie ändern und weitergeben.
+Es gibt KEINE GARANTIE, soweit dies gesetzlich zulässig ist.
+
+.SH FEHLER
+Fehler bitte auf Github melden.
+
+.SH VERSION
+1.3
+
+.SH DATUM
+Januar 2024

@@ -16,13 +16,16 @@ The script can be executed with various commands and options to perform specific
 .SH COMMANDS
 The following commands are available:
 
+.IP "\fBconfig\fR"
+Opens the configuration file for editing.
+
 .IP "\fBaddhost\fR \fIIP-ADDRESS\fR"
 Adds the specified IP address to the list of hosts.
 
 .IP "\fBdelhost\fR \fIIP-ADDRESS\fR"
 Removes the specified IP address from the list of hosts.
 
-.IP "\fBprinthosts\fR"
+.IP "\fB-l\fR"
 Lists all IP addresses (hosts).
 
 .IP "\fBccron\fR \fICRON-SCHEDULE\fR"
@@ -31,14 +34,14 @@ Creates a cron job for periodic pinging based on the specified cron schedule.
 .IP "\fBdelcron\fR \fICRON-JOB-NAME\fR"
 Deletes the cron job with the specified name.
 
-.IP "\fBconfig\fR"
-Opens the configuration file for editing.
-
 .SH OPTIONS
 The following options are available:
 
 .IP "\fB-h\fR"
 Display this help message.
+
+.IP "\fBlog\fR"
+Opens the log file for viewing and editing.
 
 .SH EXAMPLES
 To add a host:
