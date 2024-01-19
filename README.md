@@ -16,7 +16,7 @@ Steps
 1. Clone the repository or download the script files.
 
 ```bash
-git clone https://github.com/your_username/ncping.git
+git clone https://github.com/samuli100/ncping.git
 ```
 
 2. Navigate to the script directory.
