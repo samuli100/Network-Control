@@ -1,4 +1,4 @@
-ncping - Network Ping Utility
+ncping - Network Control
 
 Overview
 
