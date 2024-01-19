@@ -38,23 +38,25 @@ pinging() {
             # Add debug information to check the result of the ping
             echo "Ping result: $ping_result"
 
-            packet_loss=$(echo "$ping_result" | grep -oP "\d+(?=% packet loss)")
+            packet_loss=$(echo "$ping_result" | grep -oP "\d+(\.\d+)?(?=% packet loss)")
 
             if [ $? -ne 0 ] || [ "$packet_loss" == "100" ] || [ -z "$packet_loss" ]; then
                 current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
                 echo "$current_datetime : $host not reachable!" >> "$LOG_FILE"
             else
-                
                 current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
                 echo "$current_datetime : $host reachable with $packet_loss% packet loss" >> "$LOG_FILE"
-                
             fi
         fi
     done < "$HOSTS_FILE"
 }
 
-editConfig() {
+config() {
     nano "$CONFIG_FILE" || { echo "Error opening configuration file."; exit 1; }
+}
+
+log() {
+    nano "$LOG_FILE" || { echo "Error opening log file."; exit 1; }
 }
 
 addhost() {
@@ -65,7 +67,7 @@ delhost() {
     [ -n "$2" ] && sed -i "/$2/d" "$HOSTS_FILE" && echo "$2 deleted successfully!" || echo "Error deleting host."
 }
 
-printhosts() {
+-l() {
     echo "Saved Hosts:"
     cat "$HOSTS_FILE"
 }
@@ -96,7 +98,7 @@ delcron() {
     fi
 }
 
-if [[ "$1" == "config" || "$1" == "addhost" || "$1" == "delhost" || "$1" == "printhosts" || "$1" == "ccron" || "$1" == "delcron" ]]; then
+if [[ "$1" == "config" || "$1" == "log" || "$1" == "addhost" || "$1" == "delhost" || "$1" == "-l" || "$1" == "ccron" || "$1" == "delcron" ]]; then
     "$1" "$@"
 elif [[ "$1" == "-h" ]]; then
     man ncping
