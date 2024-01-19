@@ -72,14 +72,21 @@ addhost() {
     local new_host="$2"
 
     # Überprüfen, ob der Host bereits existiert
-    if grep -qFx "$new_host" "$HOSTS_FILE"; then
+    local exists=false
+    while IFS= read -r line; do
+        if [ "$line" == "$new_host" ]; then
+            exists=true
+            break
+        fi
+    done < "$HOSTS_FILE"
+
+    # Entscheidung basierend auf dem Überprüfungsergebnis treffen
+    if [ "$exists" = true ]; then
         echo "$new_host already exists."
     else
-        # Fügt den Host hinzu
         [ -n "$new_host" ] && echo "$new_host" >> "$HOSTS_FILE" || echo "Error adding host."
     fi
 }
-
 
 # Hosts löschen
 delhost() {

@@ -7,14 +7,16 @@ BIN_DIR="/usr/bin"
 MAN_DIR="/usr/local/share/man/man1"
 
 # Entfernt Cronjob
-cron_job_pattern=".*$SCRIPT_NAME"
-crontab_content=$(crontab -l 2>/dev/null || echo "")
+    local existing_cron_job=$(crontab -l 2>/dev/null || echo "")
 
-if echo "$crontab_content" | grep -qE "$cron_job_pattern"; then
-    echo "$crontab_content" | sed -E "/$cron_job_pattern/d" | crontab - && echo "Cron job removed successfully: $SCRIPT_NAME."
-else
-    echo "No corresponding Cron job found: $SCRIPT_NAME."
-fi
+    # Löscht Cronjob wenn er existiert
+    if echo "$existing_cron_job" | grep -qE ".*$SCRIPT_NAME"; then
+        existing_cron_job=$(echo "$existing_cron_job" | sed -E "/.*$SCRIPT_NAME/d")
+    
+    else
+        echo "No corresponding Cron job found: $SCRIPT_NAME."
+    fi
+
 
 # Fügt informationen hinzu
 echo "Removing script directory: $SCRIPT_DIR"
