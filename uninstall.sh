@@ -7,6 +7,7 @@ BIN_DIR="/usr/bin"
 MAN_DIR="/usr/local/share/man/man1"
 
 # Entfernt Cronjob
+rmc(){
     local existing_cron_job=$(crontab -l 2>/dev/null || echo "")
 
     # Löscht Cronjob wenn er existiert
@@ -16,7 +17,7 @@ MAN_DIR="/usr/local/share/man/man1"
     else
         echo "No corresponding Cron job found: $SCRIPT_NAME."
     fi
-
+}
 
 # Fügt informationen hinzu
 echo "Removing script directory: $SCRIPT_DIR"
